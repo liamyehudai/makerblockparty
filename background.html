@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Party Lights & Confetti Background</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #1a0b2e; /* Deep purple base */
+        }
+        canvas {
+            display: block;
+        }
+        .overlay-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            pointer-events: none; /* Let clicks pass through to canvas */
+            text-shadow: 0 0 20px rgba(255, 0, 255, 0.8);
+            z-index: 10;
+        }
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            letter-spacing: 5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            mix-blend-mode: overlay;
+        }
+        p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Optional content overlay to show it works as a background -->
+    <div class="overlay-content">
+        <h1></h1>
+        <p></p>
+    </div>
+
+    <canvas id="partyCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('partyCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        
+        // Colors extracted from the provided party images (Pinks, Purples, Blues, White)
+        const confettiColors = [
+            '#ff00ff', // Magenta
+            '#9d00ff', // Deep Purple
+            '#00ffff', // Cyan
+            '#ffffff', // White
+            '#ffcc00', // Gold accent
+            '#ff69b4'  // Hot Pink
+        ];
+
+        // Resize handling
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // --- CONFETTI ENGINE ---
+        const confettiCount = 300;
+        const confetti = [];
+
+        class ConfettiPiece {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height - height; // Start above screen
+                this.size = (Math.random() * 10) + 5;
+                this.color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                
+                // Physics
+                this.speedY = (Math.random() * 3) + 2; // Falling speed
+                this.speedX = (Math.random() * 2) - 1; // Drift
+                
+                // Rotation/Flutter
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = (Math.random() * 10) - 5;
+                
+                // Oscillation for "fluttering" paper effect
+                this.oscillationSpeed = (Math.random() * 0.1) + 0.05;
+                this.oscillationOffset = Math.random() * Math.PI;
+                this.oscillationAmplitude = Math.random() * 20; // How wide it sways
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += Math.sin(this.oscillationOffset) * 2 + this.speedX;
+                this.rotation += this.rotationSpeed;
+                this.oscillationOffset += this.oscillationSpeed;
+
+                // Reset if it goes off bottom
+                if (this.y > height) {
+                    this.init();
+                    this.y = -20; // Restart just above top
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                
+                // simulate 3D flutter by scaling the width based on sine wave
+                const scaleX = Math.cos(this.oscillationOffset);
+                ctx.scale(scaleX, 1);
+
+                ctx.fillStyle = this.color;
+                
+                // Randomly choose circle or rectangle for variety
+                // We assume rectangular for most confetti
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size * 0.6);
+                
+                ctx.restore();
+            }
+        }
+
+        // Initialize Confetti
+        for (let i = 0; i < confettiCount; i++) {
+            const c = new ConfettiPiece();
+            // Scatter initial positions so they don't all start at top
+            c.y = Math.random() * height; 
+            confetti.push(c);
+        }
+
+
+        // --- LIGHTS / SPOTLIGHTS ENGINE ---
+        // Simulates the volumetric beams seen in the photos
+        const spotlights = [
+            { x: 0.2, speed: 0.002, angle: 0.5, color: 'rgba(157, 0, 255, 0.3)' }, // Left Purple
+            { x: 0.8, speed: -0.003, angle: -0.5, color: 'rgba(0, 255, 255, 0.2)' }, // Right Cyan
+            { x: 0.5, speed: 0.005, angle: 0, color: 'rgba(255, 0, 150, 0.2)' },     // Center Pink
+        ];
+
+        let time = 0;
+
+        function drawSpotlights() {
+            ctx.globalCompositeOperation = 'screen'; // Blending mode to make lights add up
+
+            spotlights.forEach(light => {
+                // Animate angle
+                light.angle = Math.sin(time * light.speed) * 0.8; 
+                
+                ctx.save();
+                
+                // Position light source at top (relative to width)
+                const sourceX = width * light.x;
+                const sourceY = -100;
+
+                ctx.translate(sourceX, sourceY);
+                ctx.rotate(light.angle);
+
+                // Create beam gradient
+                // x0, y0, r0, x1, y1, r1
+                const gradient = ctx.createRadialGradient(0, 0, 0, 0, height * 1.2, width * 0.4);
+                gradient.addColorStop(0, light.color); 
+                gradient.addColorStop(0.4, light.color.replace(/[\d.]+\)$/g, '0.05)')); // Fade out
+                gradient.addColorStop(1, 'rgba(0,0,0,0)');
+
+                // Draw the beam (Triangle-ish shape)
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(-width * 0.3, height * 1.5);
+                ctx.lineTo(width * 0.3, height * 1.5);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.restore();
+            });
+
+            ctx.globalCompositeOperation = 'source-over'; // Reset blending
+        }
+
+        function drawVignette() {
+            // Darken the edges to focus attention and simulate club atmosphere
+            const grad = ctx.createRadialGradient(width/2, height/2, height/3, width/2, height/2, height);
+            grad.addColorStop(0, 'rgba(0,0,0,0)');
+            grad.addColorStop(1, 'rgba(0,0,0,0.6)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0,0,width,height);
+        }
+
+        // --- ANIMATION LOOP ---
+        function animate() {
+            // Clear screen with a slight trail effect for motion blur (optional, strictly clearing here for crispness)
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. Draw Background Base
+            // Create a dynamic gradient background that shifts slightly
+            const bgGradient = ctx.createLinearGradient(0, 0, 0, height);
+            bgGradient.addColorStop(0, '#2a0e45'); // Lighter purple top
+            bgGradient.addColorStop(1, '#05020a'); // Almost black bottom
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, width, height);
+
+            time += 1;
+
+            // 2. Draw Lights
+            drawSpotlights();
+
+            // 3. Draw Confetti
+            confetti.forEach(c => {
+                c.update();
+                c.draw();
+            });
+
+            // 4. Draw Vignette (Atmosphere)
+            drawVignette();
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+    </script>
+</body>
+</html>

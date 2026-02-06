@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunset Balloon Release</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+        canvas {
+            display: block;
+        }
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: sans-serif;
+            font-size: 12px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">Drifting Clouds & Balloons</div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let balloons = [];
+        let clouds = [];
+        let frame = 0;
+
+        // Configuration
+        const config = {
+            balloonCount: 60, // Number of balloons on screen
+            cloudCount: 8,
+            colors: [
+                '#e74c3c', // Red
+                '#3498db', // Blue
+                '#f1c40f', // Yellow
+                '#9b59b6', // Purple
+                '#e67e22', // Orange
+                '#2ecc71', // Green
+                '#d35400'  // Darker Orange
+            ]
+        };
+
+        // Resize handling
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        window.addEventListener('resize', resize);
+
+        // --- Classes ---
+
+        class Balloon {
+            constructor(initialY = null) {
+                this.reset(initialY);
+            }
+
+            reset(initialY = null) {
+                this.r = 15 + Math.random() * 20; // Radius
+                this.x = Math.random() * width;
+                // Start below screen if no initialY, otherwise random placement (for startup)
+                this.y = initialY !== null ? initialY : height + this.r + Math.random() * 100;
+                this.speed = 0.5 + Math.random() * 1.5;
+                this.color = config.colors[Math.floor(Math.random() * config.colors.length)];
+                this.swaySpeed = 0.02 + Math.random() * 0.03;
+                this.swayOffset = Math.random() * Math.PI * 2;
+                this.swayAmp = 0.5 + Math.random() * 1.5;
+                this.stringLength = 40 + Math.random() * 20;
+            }
+
+            update() {
+                this.y -= this.speed;
+                
+                // Horizontal sway
+                this.dx = Math.sin(frame * this.swaySpeed + this.swayOffset) * this.swayAmp;
+                this.x += this.dx;
+
+                // Reset if it goes off top
+                if (this.y < -this.stringLength - this.r) {
+                    this.reset();
+                    this.y = height + this.r + Math.random() * 50; // Ensure it starts from bottom again
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                
+                // String
+                ctx.beginPath();
+                ctx.moveTo(0, this.r * 1.1);
+                // Beizer curve for string based on sway
+                ctx.quadraticCurveTo(
+                    -this.dx * 5, 
+                    this.stringLength / 2, 
+                    -this.dx * 2, 
+                    this.stringLength
+                );
+                ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Balloon Body
+                ctx.beginPath();
+                // Stretching the circle to make it oval
+                ctx.ellipse(0, 0, this.r * 0.85, this.r, 0, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+
+                // Shine/Highlight
+                ctx.beginPath();
+                ctx.ellipse(-this.r * 0.3, -this.r * 0.3, this.r * 0.2, this.r * 0.1, Math.PI / 4, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.fill();
+
+                // Knot triangle
+                ctx.beginPath();
+                ctx.moveTo(-2, this.r * 0.95);
+                ctx.lineTo(2, this.r * 0.95);
+                ctx.lineTo(0, this.r * 1.1);
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        class Cloud {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(randomX = false) {
+                this.x = randomX ? Math.random() * width : -200;
+                this.y = Math.random() * (height * 0.6); // Top 60% of screen
+                this.speed = 0.2 + Math.random() * 0.3;
+                this.scale = 0.5 + Math.random() * 1.5;
+                this.opacity = 0.3 + Math.random() * 0.3;
+                
+                // Build the shape of the cloud from smaller puffs
+                this.puffs = [];
+                const puffCount = 5 + Math.floor(Math.random() * 5);
+                for(let i=0; i<puffCount; i++) {
+                    this.puffs.push({
+                        x: (Math.random() - 0.5) * 100,
+                        y: (Math.random() - 0.5) * 40,
+                        r: 20 + Math.random() * 30
+                    });
+                }
+            }
+
+            update() {
+                this.x += this.speed;
+                if (this.x > width + 200) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.scale(this.scale, this.scale);
+                ctx.fillStyle = `rgba(255, 240, 220, ${this.opacity})`;
+                
+                // Draw puffs
+                this.puffs.forEach(puff => {
+                    ctx.beginPath();
+                    ctx.arc(puff.x, puff.y, puff.r, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                
+                ctx.restore();
+            }
+        }
+
+        // --- Initialization ---
+
+        function init() {
+            resize();
+            
+            // Create clouds
+            for(let i=0; i<config.cloudCount; i++) {
+                clouds.push(new Cloud());
+            }
+
+            // Create balloons
+            for(let i=0; i<config.balloonCount; i++) {
+                // Initial placement scattered vertically
+                balloons.push(new Balloon(Math.random() * height + height/2));
+            }
+            
+            // Create additional balloons starting from bottom for the continuous stream
+            for(let i=0; i<20; i++) {
+                 balloons.push(new Balloon());
+            }
+
+            animate();
+        }
+
+        // --- Main Loop ---
+
+        function drawSky() {
+            // Sunset Gradient - Modified to Blues on top
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, '#001f3f');   // Deep Navy Blue
+            gradient.addColorStop(0.3, '#3498db'); // Bright Blue (replacing purple)
+            gradient.addColorStop(0.6, '#e67e22'); // Orange Horizon
+            gradient.addColorStop(1, '#f1c40f');   // Yellow/Bright Bottom
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            // Sun
+            ctx.save();
+            const sunY = height * 0.85;
+            const sunX = width / 2;
+            
+            // Sun Glow
+            const sunGrad = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 200);
+            sunGrad.addColorStop(0, 'rgba(255, 255, 200, 0.8)');
+            sunGrad.addColorStop(0.2, 'rgba(255, 200, 100, 0.4)');
+            sunGrad.addColorStop(1, 'rgba(255, 200, 100, 0)');
+            
+            ctx.fillStyle = sunGrad;
+            ctx.fillRect(0, 0, width, height);
+
+            // Sun Core
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 40, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 230, 0.9)';
+            ctx.fill();
+
+            // Sun Rays - Complex 5 Stacks
+            const rayCount = 12;
+            const baseAngle = (Math.PI * 2) / rayCount;
+
+            for(let stack = 0; stack < 5; stack++) {
+                ctx.save();
+                ctx.translate(sunX, sunY);
+                
+                // Stack config
+                const direction = stack % 2 === 0 ? 1 : -1; // Alternate CW/CCW
+                const baseSpeed = 0.002 / 30; // 30th as fast as original
+                const stackSpeed = baseSpeed * (1 + (stack * 0.15)); // Slightly different speeds
+                
+                // Rotate the entire stack container
+                ctx.rotate(frame * stackSpeed * direction + (stack * Math.PI/7)); 
+
+                ctx.strokeStyle = `rgba(255, 255, 255, 0.05)`; 
+                
+                for(let i=0; i<rayCount; i++) {
+                    ctx.rotate(baseAngle);
+                    ctx.beginPath();
+                    ctx.moveTo(50, 0);
+                    
+                    // Draw far enough to cover corners
+                    ctx.lineTo(width * 1.5, 0);
+                    
+                    // Varied thickness: 3x thicker avg (60) + variation based on index
+                    const variation = Math.sin(i * 2 + stack) * 20; 
+                    ctx.lineWidth = 60 + variation; 
+                    
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+            
+            ctx.restore();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            drawSky();
+
+            // Draw Clouds
+            clouds.forEach(cloud => {
+                cloud.update();
+                cloud.draw();
+            });
+
+            // Draw Balloons
+            balloons.forEach(balloon => {
+                balloon.update();
+                balloon.draw();
+            });
+
+            frame++;
+            requestAnimationFrame(animate);
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+</html>

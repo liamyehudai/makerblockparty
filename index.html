@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maker Block Party - Art + STEM Festival</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Space Grotesk for headers (Tech/Art vibe), Inter for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-red': '#E31C25', /* Reminiscent of MakeMIT / SBU Red */
+                        'brand-dark': '#0F172A',
+                        'brand-cream': '#F8FAFC',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .grid-bg {
+            background-size: 40px 40px;
+            background-image:
+                linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+        }
+        .blob {
+            position: absolute;
+            filter: blur(50px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="bg-brand-cream text-slate-800 font-sans antialiased overflow-x-hidden">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="#" class="font-display font-bold text-2xl tracking-tighter text-brand-dark">
+                        MAKER<span class="text-brand-red">BLOCK</span><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-yellow-400 via-green-500 via-blue-500 to-purple-500">PARTY</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-gray-600 hover:text-brand-red transition">About</a>
+                    <a href="#tracks" class="text-gray-600 hover:text-brand-red transition">Experience</a>
+                    <a href="#schedule" class="text-gray-600 hover:text-brand-red transition">Schedule</a>
+                    <a href="#faq" class="text-gray-600 hover:text-brand-red transition">FAQ</a>
+                </div>
+                <div>
+                    <a href="#register" class="confetti-trigger bg-brand-dark text-white px-5 py-2 rounded-full font-medium hover:bg-brand-red transition shadow-lg transform hover:-translate-y-0.5">
+                        Register Interest
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 grid-bg overflow-hidden">
+        <canvas id="hero-confetti" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+        <!-- Decorational Blobs -->
+        <div class="blob bg-red-200 w-96 h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="blob bg-blue-200 w-80 h-80 rounded-full bottom-0 right-0 translate-x-1/3 translate-y-1/3"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center px-3 py-1 rounded-full border border-brand-red/20 bg-brand-red/5 text-brand-red text-sm font-semibold mb-6">
+                <span class="flex h-2 w-2 rounded-full bg-brand-red mr-2"></span>
+                Pilot Event • Spring 2026
+            </div>
+            <h1 class="text-6xl md:text-8xl font-display font-bold text-brand-dark mb-6 tracking-tight leading-none">
+                BUILD TOOLS.<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-orange-500">SUPPORT ART.</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600 mb-10">
+                A communal festival integrating Art & STEM. Join artists, engineers, and makers to collaboratively build platforms that support contemporary artistic practice @ Stony Brook University.
+            </p>
+            <div class="flex justify-center gap-4">
+                <button class="confetti-trigger bg-brand-red text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-red-700 transition shadow-xl">
+                    Apply Now
+                </button>
+                <button class="bg-white text-brand-dark border border-gray-300 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-50 transition">
+                    Learn More
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About / Vision -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-display font-bold mb-6 text-brand-dark">Not Just Another Hackathon.</h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Maker Block Party is a preliminary communal festival. We are bringing together students across Art, Media, and History to build tools and ideas alongside STEM majors.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Our goal is to align students with a network of peers, mentors, and careers without the typical "burnout" culture of tech events.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="w-6 h-6 text-brand-red mr-3 mt-1"></i>
+                            <span class="text-gray-700">Interdisciplinary engagement between Art & STEM departments.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="w-6 h-6 text-brand-red mr-3 mt-1"></i>
+                            <span class="text-gray-700">Workshops, demos, and keynotes from faculty & industry.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="w-6 h-6 text-brand-red mr-3 mt-1"></i>
+                            <span class="text-gray-700">Connecting students to local makerspaces and career networks.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="relative">
+                    <div class="absolute inset-0 bg-brand-red rounded-2xl transform rotate-3 opacity-10"></div>
+                    <div class="relative bg-gray-100 rounded-2xl overflow-hidden border border-gray-200 h-96 flex items-center justify-center">
+                        <img src="picture.png" alt="Maker Jam Project" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Experience (Components) -->
+    <section id="tracks" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-display font-bold text-brand-dark">The Experience</h2>
+                <p class="text-gray-600 mt-4">We've designed the event to be humane, creative, and social.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:rotate-1">
+                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-6">
+                        <i data-lucide="coffee" class="w-6 h-6 text-orange-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-display mb-3">24-Hour Internet Café</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                        The social spine of the event. A welcoming commons with coffee, tea, and snacks. Designed for endurance without burnout. A place to drop in, work, and chat.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:rotate-1">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                        <i data-lucide="mic" class="w-6 h-6 text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-display mb-3">Idea Exchange & Keynotes</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                        Short invited talks and visiting artists present for informal conversation. Not just lectures, but a dialogue about the tools we build.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:rotate-1">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
+                        <i data-lucide="wrench" class="w-6 h-6 text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-display mb-3">Booths & Demos</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                        A dedicated area for visiting talent, local makerspaces, and student clubs to demonstrate their work live.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6-Hour Mock MakerJam Competition -->
+    <section id="competition" class="py-20 bg-brand-dark text-white relative overflow-hidden">
+        <iframe src="background.html" class="absolute inset-0 w-full h-full border-0 pointer-events-none z-0"></iframe>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <div class="inline-flex items-center px-3 py-1 rounded-full border border-brand-red/50 bg-brand-red/10 text-brand-red text-xs font-bold uppercase tracking-widest mb-6">
+                        <i data-lucide="zap" class="w-3 h-3 mr-2"></i> Highlight Event
+                    </div>
+                    <h2 class="text-4xl font-display font-bold mb-8 uppercase tracking-widest" style="text-shadow: 0 0 20px rgba(255, 0, 255, 0.8); color: white;">6-Hour MakerJam</h2>
+                    
+                    <div class="bg-slate-900/80 backdrop-blur-md rounded-2xl p-8 border border-white/10 shadow-2xl">
+                        <p class="text-lg text-gray-300 mb-6">
+                            Can't commit to a full weekend? Dive into our rapid-fire design sprint. We provide a whimsical theme, you provide the creativity.
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="flex items-center justify-center h-10 w-10 rounded-md bg-slate-800 text-brand-red border border-slate-700">
+                                        <span class="font-bold font-display">01</span>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold font-display">Theme Reveal</h4>
+                                    <p class="text-gray-400 text-sm">A surprise prompt designed to encourage "useless" but delightful inventions.</p>
+                                </div>
+                            </div>
+                            <div class="flex">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="flex items-center justify-center h-10 w-10 rounded-md bg-slate-800 text-brand-red border border-slate-700">
+                                        <span class="font-bold font-display">02</span>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold font-display">Mixed Teams</h4>
+                                    <p class="text-gray-400 text-sm">We pair artists with engineers. No pre-formed teams allowed for this track!</p>
+                                </div>
+                            </div>
+                            <div class="flex">
+                                <div class="flex-shrink-0 mt-1">
+                                    <div class="flex items-center justify-center h-10 w-10 rounded-md bg-slate-800 text-brand-red border border-slate-700">
+                                        <span class="font-bold font-display">03</span>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold font-display">Rough & Ready</h4>
+                                    <p class="text-gray-400 text-sm">Cardboard, hot glue, and duct tape. Focus on the concept, not the polish.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-10">
+                            <a href="#register" class="confetti-trigger inline-flex items-center text-white bg-brand-red hover:bg-red-700 px-6 py-3 rounded-lg font-bold transition shadow-lg hover:shadow-red-900/20 w-full justify-center">
+                                Sign Up for the Jam <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 relative">
+                    <!-- Mock Schedule for the Jam -->
+                    <h3 class="text-xl font-bold font-display mb-6 flex items-center">
+                        <i data-lucide="clock" class="mr-2 w-5 h-5 text-gray-400"></i> Jam Schedule
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                            <span class="font-mono text-brand-red">12:00 PM</span>
+                            <span class="text-gray-300">Theme Announcement</span>
+                        </div>
+                        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                            <span class="font-mono text-brand-red">12:30 PM</span>
+                            <span class="text-gray-300">Team Formation</span>
+                        </div>
+                        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                            <span class="font-mono text-brand-red">01:00 PM</span>
+                            <span class="text-gray-300">Hacking Begins</span>
+                        </div>
+                        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                            <span class="font-mono text-brand-red">06:00 PM</span>
+                            <span class="text-gray-300">Pencils Down</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono text-brand-red">06:30 PM</span>
+                            <span class="text-gray-300">Showcase & Pizza</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Potential Partners Grid (Based on PDF) -->
+    <section class="py-16 bg-white border-y border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-8">Calling All Communities</p>
+            <div class="flex flex-wrap justify-center gap-4 opacity-70">
+                <!-- Mock Pills for Clubs -->
+                <span class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-600">Robotics Team</span>
+                <span class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-600">Art Club</span>
+                <span class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-600">Solar Racing</span>
+                <span class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-600">Girls Who Code</span>
+                <span class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-600">Game Dev Club</span>
+                <span class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-600">IEEE</span>
+                <span class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold text-gray-600">WUSB Radio</span>
+            </div>
+            <p class="mt-6 text-sm text-gray-500 italic">...and many more invited!</p>
+        </div>
+    </section>
+
+    <!-- Sponsors Section -->
+    <section class="py-20 bg-slate-50 border-b border-gray-200 relative overflow-hidden">
+        <iframe src="background2.html" class="absolute inset-0 w-full h-full border-0 pointer-events-none z-0"></iframe>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="bg-white/90 backdrop-blur-md rounded-2xl p-8 border border-gray-200 shadow-2xl">
+                <h2 class="text-4xl font-display font-bold text-brand-dark mb-4">Sponsors & Partners</h2>
+                <p class="text-gray-600 mb-12 max-w-2xl mx-auto">Supported by leading organizations in Art, Tech, and Fabrication.</p>
+
+                <!-- Gold Sponsor -->
+                <div class="mb-16">
+                    <div class="inline-flex items-center px-3 py-1 rounded-full border border-yellow-500/30 bg-yellow-50 text-yellow-600 text-xs font-bold uppercase tracking-widest mb-6">
+                        <i data-lucide="star" class="w-3 h-3 mr-2 fill-yellow-500"></i> Gold Sponsor
+                    </div>
+                    <div class="flex justify-center">
+                    <div class="bg-white px-16 py-10 rounded-2xl shadow-xl border border-yellow-200 flex items-center justify-center max-w-lg w-full transform hover:scale-105 transition duration-300">
+                            <span class="text-5xl font-black text-slate-800 tracking-tighter">FUTO</span>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- National Organizations -->
+                <div class="mb-16">
+                    <h3 class="text-xl font-bold font-display text-gray-800 mb-8">National Organizations</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <!-- Tech Giants -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">Google Developer Student Clubs</div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">Microsoft Learn</div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">AWS Community</div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">Adobe Creative Campus</div>
+                        
+                        <!-- Foundations & Non-Profits -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">Mozilla Foundation</div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">Sloan Foundation</div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">Raspberry Pi Foundation</div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">OSHWA</div>
+
+                        <!-- Specialized -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">iFixit</div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">MatterHackers</div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm">NYC ACM SIGGRAPH</div>
+                    </div>
+                </div>
+
+                <!-- Local Industry -->
+                <div>
+                    <h3 class="text-xl font-bold font-display text-gray-800 mb-8">Local Industry Partners</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">Adafruit Industries</div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">Shapeways</div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">Estée Lauder Companies</div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">Canon U.S.A.</div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">Zebra Technologies</div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">SITU</div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">Bednark Studio</div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">Standard Transmission</div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">Smooth-On</div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">B&H Photo Video</div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">IDSA (NYC/LI)</div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-100 text-gray-500 text-sm font-medium hover:text-brand-red transition cursor-default">SEGD (NYC)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule (Mockup based on Feb/Mar PDF data) -->
+    <section id="schedule" class="py-20 bg-brand-dark text-white">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-4xl font-display font-bold mb-12 text-center">Draft Schedule</h2>
+            
+            <div class="space-y-8">
+                <!-- Day 1 -->
+                <div class="relative pl-8 border-l border-gray-700">
+                    <div class="absolute -left-3 top-0 w-6 h-6 bg-brand-red rounded-full border-4 border-brand-dark"></div>
+                    <h3 class="text-xl font-bold font-display mb-1">Kickoff & Idea Exchange</h3>
+                    <p class="text-gray-400 text-sm mb-4">Friday Afternoon</p>
+                    <div id="schedule-friday" class="space-y-2">
+                        <!-- Dynamic Content -->
+                    </div>
+                </div>
+
+                <!-- Day 2 -->
+                <div class="relative pl-8 border-l border-gray-700">
+                    <div class="absolute -left-3 top-0 w-6 h-6 bg-white rounded-full border-4 border-brand-dark"></div>
+                    <h3 class="text-xl font-bold font-display mb-1">Build Day</h3>
+                    <p class="text-gray-400 text-sm mb-4">Saturday (All Day)</p>
+                    <div id="schedule-saturday" class="space-y-2">
+                         <!-- Dynamic Content -->
+                    </div>
+                </div>
+
+                 <!-- Day 3 -->
+                 <div class="relative pl-8 border-l border-gray-700">
+                    <div class="absolute -left-3 top-0 w-6 h-6 bg-white rounded-full border-4 border-brand-dark"></div>
+                    <h3 class="text-xl font-bold font-display mb-1">Showcase</h3>
+                    <p class="text-gray-400 text-sm mb-4">Sunday Morning</p>
+                    <div id="schedule-sunday" class="space-y-2">
+                         <!-- Dynamic Content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-20 bg-white">
+        <div class="max-w-3xl mx-auto px-4">
+            <h2 class="text-4xl font-display font-bold mb-12 text-center text-brand-dark">Frequently Asked Questions</h2>
+            
+            <div class="space-y-6">
+                <details class="group bg-gray-50 rounded-lg p-6 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-lg list-none">
+                        <span>Is this a competition?</span>
+                        <span class="transition group-open:rotate-180">
+                            <i data-lucide="chevron-down"></i>
+                        </span>
+                    </summary>
+                    <p class="text-gray-600 mt-4 leading-relaxed">
+                        While competition is not the primary focus for this first iteration, we are exploring options! The main goal is collaboration and connection. However, we may integrate with existing events like Cadathon.
+                    </p>
+                </details>
+
+                <details class="group bg-gray-50 rounded-lg p-6 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-lg list-none">
+                        <span>Do I need to be an engineer?</span>
+                        <span class="transition group-open:rotate-180">
+                            <i data-lucide="chevron-down"></i>
+                        </span>
+                    </summary>
+                    <p class="text-gray-600 mt-4 leading-relaxed">
+                        Absolutely not! This event is specifically designed to bring Art students, Media majors, and Historians together with STEM students. We need creatives, designers, and thinkers just as much as coders.
+                    </p>
+                </details>
+
+                <details class="group bg-gray-50 rounded-lg p-6 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-lg list-none">
+                        <span>What should I bring?</span>
+                        <span class="transition group-open:rotate-180">
+                            <i data-lucide="chevron-down"></i>
+                        </span>
+                    </summary>
+                    <p class="text-gray-600 mt-4 leading-relaxed">
+                        Bring your laptop, any specific art supplies you love, and an open mind. We will provide Wi-Fi, power, coffee, and a supportive environment.
+                    </p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark text-white py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0">
+                <h4 class="font-display font-bold text-2xl">MAKER<span class="text-brand-red">BLOCK</span></h4>
+                <p class="text-gray-400 text-sm mt-2">© 2026 Maker Block Party. All rights reserved.</p>
+            </div>
+            <div class="flex space-x-6">
+                <a href="#" class="text-gray-400 hover:text-white transition"><i data-lucide="instagram"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition"><i data-lucide="twitter"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition"><i data-lucide="mail"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Confetti Effect
+        window.addEventListener('load', () => {
+            // Load Schedule
+            fetch('workshops.json')
+                .then(response => response.json())
+                .then(schedule => {
+                    const days = ['friday', 'saturday', 'sunday'];
+                    
+                    days.forEach(day => {
+                        const container = document.getElementById(`schedule-${day}`);
+                        if (schedule[day] && container) {
+                            schedule[day].forEach(event => {
+                                const div = document.createElement('div');
+                                div.className = 'bg-slate-800 rounded-lg p-4 mb-2 hover:bg-slate-700 transition cursor-default group';
+                                div.innerHTML = `
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                                        <div class="flex items-center gap-4">
+                                            <span class="font-mono text-brand-red whitespace-nowrap min-w-[5rem]">${event.time}</span>
+                                            <div>
+                                                <span class="font-bold block text-lg">${event.title}</span>
+                                                <span class="text-xs text-gray-400 uppercase tracking-wide flex items-center gap-1">
+                                                    <i data-lucide="users" class="w-3 h-3"></i> ${event.organization}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="hidden md:block text-sm text-gray-400 italic max-w-xs text-right">
+                                            ${event.description}
+                                        </div>
+                                    </div>
+                                    <div class="md:hidden mt-2 text-sm text-gray-400 italic">
+                                        ${event.description}
+                                    </div>
+                                `;
+                                container.appendChild(div);
+                            });
+                        }
+                    });
+                    lucide.createIcons(); // Re-init icons for new elements
+                })
+                .catch(error => console.error('Error loading schedule:', error));
+
+            // Initialize Hero Confetti
+            const heroCanvas = document.getElementById('hero-confetti');
+            const heroConfetti = confetti.create(heroCanvas, {
+                resize: true,
+                useWorker: true
+            });
+
+            // Confetti Effect
+            const duration = 2000; // 2 seconds
+            const end = Date.now() + duration;
+
+            (function frame() {
+                // Left Corner
+                heroConfetti({
+                    particleCount: 2,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0, y: 0 },
+                    colors: ['#E31C25', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6'],
+                    disableForReducedMotion: true
+                });
+                // Right Corner
+                heroConfetti({
+                    particleCount: 2,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1, y: 0 },
+                    colors: ['#E31C25', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6'],
+                    disableForReducedMotion: true
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            // Interactive Confetti Triggers
+            document.querySelectorAll('.confetti-trigger').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = (rect.left + rect.width / 2) / window.innerWidth;
+                    const y = (rect.top + rect.height / 2) / window.innerHeight;
+                    
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { x, y },
+                        colors: ['#E31C25', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6'],
+                        zIndex: 40 // Below navbar (z-50)
+                    });
+                });
+            });
+
+            // Mouse Trail Effect (Sparkles)
+            let lastParticleTime = 0;
+            document.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if (now - lastParticleTime < 25) return; 
+                lastParticleTime = now;
+
+                const particle = document.createElement('div');
+                // Randomly pick a shape: circle, square, or diamond
+                const shapes = ['rounded-full', 'rounded-none', 'rotate-45'];
+                const shapeClass = shapes[Math.floor(Math.random() * shapes.length)];
+                
+                particle.className = `fixed w-2 h-2 pointer-events-none z-[100] ${shapeClass}`;
+                particle.style.left = e.clientX + 'px';
+                particle.style.top = e.clientY + 'px';
+                
+                const colors = ['#E31C25', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#FFD700'];
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.boxShadow = `0 0 10px ${particle.style.backgroundColor}`;
+                
+                particle.style.transition = 'transform 0.8s cubic-bezier(0, .9, .57, 1), opacity 0.8s ease-out';
+                document.body.appendChild(particle);
+
+                requestAnimationFrame(() => {
+                    const angle = Math.random() * 360;
+                    particle.style.transform = `translate(${Math.random() * 60 - 30}px, ${Math.random() * 60 - 30}px) scale(0) rotate(${angle}deg)`;
+                    particle.style.opacity = '0';
+                });
+
+                setTimeout(() => {
+                    particle.remove();
+                }, 800);
+            });
+
+
+
+        });
+    </script>
+</body>
+</html>

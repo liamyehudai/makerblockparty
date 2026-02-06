@@ -1,0 +1,104 @@
+{
+    "friday": [
+        {
+            "time": "4:00 PM",
+            "title": "Check-in & Coffee at the Café",
+            "organization": "Maker Block Team",
+            "description": "Get your badge, grab a coffee, and meet your fellow makers."
+        },
+        {
+            "time": "6:00 PM",
+            "title": "Keynote: \"Art in the Age of Fabrication\"",
+            "organization": "Guest Speaker",
+            "description": "A discussion on how modern tools are reshaping artistic expression."
+        }
+    ],
+    "saturday": [
+        {
+            "time": "10:00 AM",
+            "title": "Intro to Ham Radio & Electronics",
+            "organization": "Long Island CW",
+            "description": "Learn the basics of radio communication and how to get started with your own station."
+        },
+        {
+            "time": "10:00 AM",
+            "title": "Algorithmic Crochet",
+            "organization": "Crochet Club",
+            "description": "Explore the mathematical patterns and loops found in fiber arts. Yarn provided!"
+        },
+        {
+            "time": "11:30 AM",
+            "title": "Wireless Energy Demo",
+            "organization": "Tesla Science Center at Wardenclyffe",
+            "description": "Witness the power of Tesla coils and learn about the history of wireless energy on Long Island."
+        },
+        {
+            "time": "11:30 AM",
+            "title": "CircuitPython for Beginners",
+            "organization": "Adafruit Industries",
+            "description": "Start coding hardware with Python! We'll be making lights blink and sensors read data."
+        },
+        {
+            "time": "1:00 PM",
+            "title": "Indie Arcade Cabinet Design",
+            "organization": "Wonderville",
+            "description": "A look into building custom controllers and cabinets for independent games."
+        },
+        {
+            "time": "1:00 PM",
+            "title": "Design for SLS Printing",
+            "organization": "Shapeways 3D Printing & Fabrication",
+            "description": "Deep dive into Selective Laser Sintering and how to design complex geometries."
+        },
+        {
+            "time": "2:30 PM",
+            "title": "Art & Code Intersections",
+            "organization": "CultureHub",
+            "description": "Creative coding techniques for creating immersive and interactive installations."
+        },
+        {
+            "time": "2:30 PM",
+            "title": "Combat Robot Teardown",
+            "organization": "The Robotics Team",
+            "description": "See what goes inside a battle bot. We'll open up a 30lb bot and explain the mechanics."
+        },
+        {
+            "time": "4:00 PM",
+            "title": "RFID for Interactive Art",
+            "organization": "Zebra Technologies",
+            "description": "Using Radio Frequency Identification to track movement and trigger events in art pieces."
+        },
+        {
+            "time": "4:00 PM",
+            "title": "Bio-Art Basics",
+            "organization": "Pioneer Works",
+            "description": "Integrating biology into artistic practice. Safe, hands-on experiments with microscopy."
+        },
+        {
+            "time": "5:30 PM",
+            "title": "Laser Cutting 101",
+            "organization": "Makerspace NYC",
+            "description": "From vector file to physical object. Learn the do's and don'ts of laser fabrication."
+        },
+        {
+            "time": "5:30 PM",
+            "title": "Soft Circuits & Wearables",
+            "organization": "NYC Resistor",
+            "description": "Sewing electronics into fabric using conductive thread to create light-up apparel."
+        },
+        {
+            "time": "8:00 PM",
+            "title": "Late Night Maker Social",
+            "organization": "Maker Block Team",
+            "description": "Relax, network, and enjoy some pizza with fellow creators."
+        }
+    ],
+    "sunday": [
+        {
+            "time": "11:00 AM",
+            "title": "Exhibition & Awards",
+            "organization": "Maker Block Team",
+            "description": "Showcase your work to the public and win prizes in various categories."
+        }
+    ]
+}
